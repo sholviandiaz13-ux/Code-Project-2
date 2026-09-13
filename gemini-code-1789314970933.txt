@@ -1,0 +1,59 @@
+flowchart TD
+    %% Styling Class
+    classDef startEnd fill:#1E293B,stroke:#0F172A,stroke-width:2px,color:#FFF,font-weight:bold;
+    classDef user fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1,font-weight:bold;
+    classDef system fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#B45309,font-weight:bold;
+    classDef decision fill:#FCE7F3,stroke:#DB2777,stroke-width:2px,color:#9D174D,font-weight:bold;
+    classDef process fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D,font-weight:bold;
+    classDef error fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#B91C1C;
+
+    %% Nodes & Flow
+    Start([Mulai]) ::: startEnd --> M1
+    
+    subgraph S_User ["👤 Masyarakat / Pengguna"]
+        M1[Ajukan pelayanan] ::: user
+        M2[Isi data & upload persyaratan] ::: user
+        M3[/Terima status pelayanan/] ::: user
+        M4[Beri Feedback] ::: user
+    end
+
+    subgraph S_System ["⚙️ Sistem SINOVIK"]
+        S1{Validasi Kelengkapan?} ::: decision
+        S2[Update Status & Kirim Hasil] ::: system
+    end
+
+    subgraph S_Instansi ["🏢 Instansi / Petugas"]
+        I1{Pemeriksaan Berkas?} ::: decision
+        I2[Proses Pelayanan] ::: process
+        I3[Hasil Pelayanan] ::: process
+    end
+
+    subgraph S_Pemkab ["🏛️ Pemerintah Kabupaten"]
+        K1[(Monitoring & Evaluasi)] ::: system
+        K2([Pelayanan Efektif & Transparan]) ::: startEnd
+    end
+
+    %% Fix Loops
+    E1[Perbaiki Data] ::: error
+    E2[Lengkapi Persyaratan] ::: error
+
+    %% Connections
+    Start --> M1
+    M1 --> M2
+    M2 --> S1
+    
+    S1 -- Tidak --> E1
+    E1 --> M2
+    
+    S1 -- Ya --> I1
+    
+    I1 -- Tidak --> E2
+    E2 --> M2
+    
+    I1 -- Ya --> I2
+    I2 --> I3
+    I3 --> S2
+    S2 --> M3
+    M3 --> M4
+    M4 --> K1
+    K1 --> K2
